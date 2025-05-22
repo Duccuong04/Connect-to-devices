@@ -2,8 +2,8 @@
 #include "NRF24.h"
 #include "main.h"
 
-uint8_t TxAdrress[]={0xEE, 0xDD, 0xCC, 0xBB, 0xAA};
-uint8_t data[32] = "Hello World\n";
+uint8_t TxAdrress[]={0x00, 0xDD, 0xCC, 0xBB, 0xAA};
+uint8_t Tx_data[32] = "Hello World\n";
 void RCC_Config(){
 	RCC_APB2PeriphClockCmd(SPI1_RCC | RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOC, ENABLE);
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
@@ -38,7 +38,7 @@ void SPI_Config(){
 	
 	SPI_InitStructure.SPI_Mode = SPI_Mode_Master;
 	SPI_InitStructure.SPI_Direction = SPI_Direction_2Lines_FullDuplex;
-	SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_16;
+	SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_32;
 	SPI_InitStructure.SPI_CPHA = SPI_CPHA_1Edge;
 	SPI_InitStructure.SPI_CPOL = SPI_CPOL_Low;
 	SPI_InitStructure.SPI_DataSize = SPI_DataSize_8b;
@@ -97,11 +97,12 @@ int main(void)
 	{
 		status = nrf24_ReadReg(0x07); // STATUS register
 
-		if(NRF24_Transmit(data) == 1)
+		if(NRF24_Transmit(Tx_data) == 1)
 		{
 			GPIOC->ODR ^= (1 << 13);
 		}
-		delay_ms(1000);
+		delay_ms(800);
+
 	}
 
 }
